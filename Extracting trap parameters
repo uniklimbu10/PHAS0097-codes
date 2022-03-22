@@ -1,0 +1,45 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LONGITUDINAL CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% find zero crossing points (this finds the axial equilibirum position)
+z0 =  find(diff(sign(fz_z)));
+g = gradient(fz_z,z(2)-z(1));
+s = sign(g(z0));
+zz0 = z0(s == -1);
+
+% Linear fitting 
+ % Create and Plot Raw Data
+ plot(z*1e+6,fz_z,'LineWidth',2)
+ % Fit line to data using polyfit
+ c_ax = polyfit(z(abs(z-z(zz0))<R/24)*1e+6,fz_z(abs(z-z(zz0))<R/24),1);
+ % Display evaluated equation y = m*x + b
+ disp(['Equation is y = ' num2str(c_ax(1)) '*x + ' num2str(c_ax(2))])
+ % Evaluate fit equation using polyval
+ y_est = polyval(c_ax,z(abs(z-z(zz0))<R/2)*1e+6);
+ % Add trend line to plot
+ hold on
+ plot(z(abs(z-z(zz0))<R/2)*1e+6,y_est,'r--','LineWidth',2)
+ hold off
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRANSVERSE CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ % find zero crossing points
+x0 =  find(diff(sign(fx_x)));
+g = gradient(fx_x,x(2)-x(1));
+s = sign(g(x0));
+xx0 = x0(s == -1);
+
+% Linear fitting 
+ % Create and Plot Raw Data
+ plot(x*1e+6,fx_x,'LineWidth',2)
+ % Fit line to data using polyfit
+ c_tr = polyfit(x(abs(x-x(xx0))<R/8)*1e+6,fx_x(abs(x-x(xx0))<R/8),1);
+ % Display evaluated equation y = m*x + b
+ disp(['Equation is y = ' num2str(c_tr(1)) '*x + ' num2str(c_tr(2))])
+ % Evaluate fit equation using polyval
+ y_est = polyval(c_tr,x(abs(x)<R/2)*1e+6);
+ % Add trend line to plot
+ hold on
+ plot(x(abs(x)<R/2)*1e+6,y_est,'r--','LineWidth',2)
+ hold off
+
+ disp(['Axial equilibrium position is z0 = ' num2str(z(zz0)*1e+6) ' um'])
+ disp(['Axial stiffness is kz = ' num2str(-(c_ax(1))*1e+12) ' pN/um'])
+ disp(['Transverse stiffness is kx = ' num2str(-(c_tr(1))*1e+12) ' pN/um'])
