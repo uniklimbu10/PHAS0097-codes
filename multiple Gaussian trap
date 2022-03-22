@@ -1,0 +1,41 @@
+% To trap microbubbles we need to use 4 trapping beams instead of 1:
+% Define trapping beam 1
+bg1 = BeamGauss(Ex0,Ey0,w0,L,Nphi,Nr,'lambda0',1.064e-6); 
+bg1 = bg1.normalize(power); 
+% Define trapping beam 2
+bg2 = BeamGauss(Ex0,Ey0,w0,L,Nphi,Nr,'lambda0',1.064e-6); 
+bg2 = bg2.normalize(power);
+% Define trapping beam 3
+bg3 = BeamGauss(Ex0,Ey0,w0,L,Nphi,Nr,'lambda0',1.064e-6); 
+bg3 = bg3.normalize(power);
+% Define trapping beam 4
+bg4 = BeamGauss(Ex0,Ey0,w0,L,Nphi,Nr,'lambda0',1.064e-6); 
+bg4 = bg4.normalize(power);
+
+% Calculates set of rays corresponding to optical beam
+r1 = Ray.beam2focused(bg1,f);
+r2 = Ray.beam2focused(bg2,f);
+r3 = Ray.beam2focused(bg3,f);
+r4 = Ray.beam2focused(bg4,f);
+
+% need to translate the beam foci:
+% translate beam 1
+r1.v.X = r1.v.X + d/2 ;
+r1.v.Y = r1.v.Y + d/2 ;
+% translate beam 2
+r2.v.X = r2.v.X + d/2 ;
+r2.v.Y = r2.v.Y - d/2 ;
+% translate beam 3
+r3.v.X = r3.v.X - d/2 ;
+r3.v.Y = r3.v.Y + d/2 ;
+% translate beam 4
+r4.v.X = r4.v.X - d/2 ;
+r4.v.Y = r4.v.Y - d/2 ;
+
+% Calculates set of rays correponding to the four optical beams
+v = Vector([r1.v.X; r2.v.X; r3.v.X; r4.v.X],[r1.v.Y; r2.v.Y; r3.v.Y; r4.v.Y],[r1.v.Z; r2.v.Z; r3.v.Z; r4.v.Z],...
+    [r1.v.Vx; r2.v.Vx; r3.v.Vx; r4.v.Vx],[r1.v.Vy; r2.v.Vy; r3.v.Vy; r4.v.Vy],[r1.v.Vz; r2.v.Vz; r3.v.Vz; r4.v.Vz]);
+p = [r1.P; r2.P; r3.P; r4.P];
+pol = Vector([r1.pol.X; r2.pol.X; r3.pol.X; r4.pol.X;],[r1.pol.Y; r2.pol.Y; r3.pol.Y; r4.pol.Y;],[r1.pol.Z; r2.pol.Z; r3.pol.Z; r4.pol.Z],...
+    [r1.pol.Vx; r2.pol.Vx; r3.pol.Vx; r4.pol.Vx],[r1.pol.Vy; r2.pol.Vy; r3.pol.Vy; r4.pol.Vy],[r1.pol.Vz; r2.pol.Vz; r3.pol.Vz; r4.pol.Vz]);
+r = Ray(v,p,pol);
